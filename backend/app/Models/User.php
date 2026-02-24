@@ -2,44 +2,50 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
+use MongoDB\Laravel\Eloquent\Model;
+use MongoDB\Laravel\Eloquent\SoftDeletes;
+use Illuminate\Auth\Authenticatable;
+use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 
-class User extends Authenticatable
+class User extends Model implements AuthenticatableContract
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use Authenticatable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
+    protected $connection = 'mongodb';
+    protected $collection = 'users';
+
     protected $fillable = [
         'name',
         'email',
         'password',
+        'role',
+        'avatar',
+        'bio',
+        'city',
+        'skills',
+        'github_url',
+        'linkedin_url',
+        'website_url',
+        'followers_count',
+        'following_count',
+        'is_verified',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
     protected $hidden = [
         'password',
-        'remember_token',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
     protected $casts = [
-        'email_verified_at' => 'datetime',
-        'password' => 'hashed',
+        'skills' => 'array',
+        'is_verified' => 'boolean',
+        'followers_count' => 'integer',
+        'following_count' => 'integer',
+    ];
+
+    protected $attributes = [
+        'role' => 'developer',
+        'followers_count' => 0,
+        'following_count' => 0,
+        'is_verified' => false,
     ];
 }
